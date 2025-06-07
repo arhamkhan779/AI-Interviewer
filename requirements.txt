@@ -1,0 +1,7 @@
+flask
+flask-cors
+gtts
+google-generativeai
+langchain-google-genai 
+langchain
+numpy 
