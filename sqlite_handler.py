@@ -4,6 +4,11 @@ class SqliteHandler:
 
     @staticmethod
     def find_all(dbname, collectionname):
+        import os
+        if not os.path.exists(dbname):
+            print(f"[DB ERROR] Database {dbname} does not exist. Check your path.")
+            return []
+
         try:
             with sqlite3.connect(dbname) as conn:
                 cursor = conn.cursor()
@@ -12,6 +17,7 @@ class SqliteHandler:
         except sqlite3.Error as e:
             print(f"[DB ERROR] {e}")
             return []
+
 
     @staticmethod
     def find_one_by_field(dbname, collectionname, field, value):
@@ -38,19 +44,19 @@ class SqliteHandler:
             return []
 
     @staticmethod
-    def insert_row(dbname, collectionname, id, age, name):
+    def insert_row(dbname, collectionname, **data):
         try:
             with sqlite3.connect(dbname) as conn:
                 cursor = conn.cursor()
-                cursor.execute(
-                    f"INSERT INTO {collectionname} (id, age, name) VALUES (?, ?, ?)",
-                    (id, age, name)
-                )
+                columns = ', '.join(data.keys())
+                placeholders = ', '.join(['?'] * len(data))
+                values = tuple(data.values())
+                query = f"INSERT INTO {collectionname} ({columns}) VALUES ({placeholders})"
+                cursor.execute(query, values)
                 conn.commit()
-            return True
+                return True, "Insert Successfully"
         except sqlite3.Error as e:
-            print(f"[DB ERROR] {e}")
-            return False
+            return False, f"{e}"
 
     @staticmethod
     def update_row(dbname, collectionname, target_field, new_value, condition_field, condition_value):

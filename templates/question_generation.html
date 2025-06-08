@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Question Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(-45deg, #1f1f1f, #2c3e50, #34495e, #2c3e50);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #ecf0f1;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .form-container {
+      background-color: rgba(44, 62, 80, 0.9);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    select, button {
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+      border: none;
+    }
+
+    button {
+      background-color: #1abc9c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #16a085;
+    }
+
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-left-color: #1abc9c;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #1abc9c;
+      font-size: 16px;
+      margin-top: 10px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .status-message {
+      font-size: 14px;
+      color: #2ecc71;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Generate Interview Questions</h2>
+
+    <select id="language">
+      <option value="">Select Programming Language</option>
+      <option value="Python">Python</option>
+      <option value="Java">Java</option>
+      <option value="C++">C++</option>
+    </select>
+
+    <select id="level">
+      <option value="">Select Level</option>
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+    </select>
+
+    <button id="setup">Setup Interview</button>
+
+    <div id="spinner" style="display:none;">
+      <div class="spinner"></div>
+      <div class="loading-text">Setting up your interview...</div>
+    </div>
+
+    <div id="status" class="status-message"></div>
+
+    <button id="start_btn" disabled>Begin Interview</button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('user_id');
+    const setupBtn = document.getElementById('setup');
+    const startBtn = document.getElementById('start_btn');
+    const spinner = document.getElementById('spinner');
+    const status = document.getElementById('status');
+
+    setupBtn.addEventListener('click', () => {
+    const languageSelect = document.getElementById('language');
+    const levelSelect = document.getElementById('level');
+    const language = languageSelect.value;
+    const level = levelSelect.value;
+
+    if (!language || !level) {
+      alert("Please select both language and level.");
+      return;
+    }
+
+    spinner.style.display = "block";
+    setupBtn.disabled = true;   // disable setup button immediately
+    startBtn.disabled = true;   // disable start button while setting up
+    status.textContent = "";
+
+    fetch(`/generate_question?user_id=${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ language, level })
+    })
+    .then(res => res.json())
+    .then(data => {
+      spinner.style.display = "none";
+
+      if (data.response && data.response.toLowerCase().includes("success")) {
+        status.textContent = "Interview setup successfully!";
+        setupBtn.disabled = true;        // keep setup button disabled permanently
+        startBtn.disabled = false;       // enable Begin Interview button
+        languageSelect.disabled = true;  // lock language selection
+        levelSelect.disabled = true;     // lock level selection
+      } else {
+        // If failed, allow to try again
+        status.textContent = data.response || "Failed to setup interview.";
+        status.style.color = "#e74c3c";
+        setupBtn.disabled = false;
+        startBtn.disabled = true;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      spinner.style.display = "none";
+      status.textContent = "Something went wrong. Please try again.";
+      status.style.color = "#e74c3c";
+      setupBtn.disabled = false;
+      startBtn.disabled = true;
+    });
+  });
+
+    startBtn.addEventListener('click', () => {
+      window.location.href = `/interview_template?user_id=${userId}`;
+    });
+  </script>
+
+</body>
+</html>
