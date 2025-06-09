@@ -17,7 +17,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
     }
 
     @keyframes gradientBG {
@@ -28,10 +29,19 @@
 
     h1 {
       color: #1abc9c;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       font-weight: 700;
       text-align: center;
       font-size: 2.5rem;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #ecf0f1;
+      text-align: center;
+      font-weight: 500;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .form-container {
@@ -48,13 +58,22 @@
       border-radius: 8px;
       border: none;
       width: 100%;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
       font-size: 1rem;
       font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-bottom: 1.2rem;
+      height: 1rem;
     }
 
     .btn-group {
       display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
@@ -63,15 +82,12 @@
       border: none;
       color: white;
       font-weight: 600;
-      padding: 12px 25px;
+      padding: 12px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
-      flex: 1;
+      width: 100%;
       transition: background 0.3s ease;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     button:disabled {
@@ -79,9 +95,12 @@
       cursor: not-allowed;
     }
 
-    .btn-group button#clearBtn {
-      background: #444;
-      flex: 0.5;
+    #clearBtn {
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+    }
+
+    #homeBtn {
+      background: linear-gradient(90deg, #3498db, #2980b9);
     }
 
     .spinner {
@@ -124,19 +143,7 @@
     }
 
     #reportOverlay button {
-      background: linear-gradient(90deg, #1abc9c, #16a085);
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
       width: auto;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
     }
 
     #reportContainer {
@@ -156,6 +163,7 @@
         width: 90%;
         padding: 1.5rem;
       }
+
       #reportOverlay .toolbar {
         flex-wrap: wrap;
         justify-content: center;
@@ -167,11 +175,14 @@
 <body>
 
   <div class="form-container">
-    <h1>Final Report Viewer</h1>
+    <h1>Analyze Past Interview Details</h1>
+    <h2>Final Report Viewer</h2>
     <input type="text" id="userIdInput" placeholder="Enter your ID" required />
+    <div id="errorMsg" class="error-message"></div>
     <div class="btn-group">
       <button id="fetchBtn">View Report</button>
       <button id="clearBtn">Clear</button>
+      <button id="homeBtn" onclick="window.location.href='/'">Home</button>
     </div>
   </div>
 
@@ -194,13 +205,18 @@
     const reportContainer = document.getElementById('reportContainer');
     const backBtn = document.getElementById('backBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const errorMsg = document.getElementById('errorMsg');
 
     let currentReportHTML = '';
 
     fetchBtn.addEventListener('click', async () => {
       const userId = userIdInput.value.trim();
-      if (!userId) return alert("Please enter a valid ID");
+      if (!userId) {
+        errorMsg.textContent = "Please enter a valid ID.";
+        return;
+      }
 
+      errorMsg.textContent = '';
       fetchBtn.disabled = true;
       fetchBtn.innerHTML = 'Fetching <span class="spinner"></span>';
 
@@ -217,11 +233,11 @@
           currentReportHTML = data.report;
           showReport();
         } else {
-          alert(data.response || "No report found for this ID.");
+          errorMsg.textContent = data.response || "No report found for this ID.";
         }
 
       } catch (err) {
-        alert("Error fetching report. Try again later.");
+        errorMsg.textContent = "Error fetching report. Try again later.";
       } finally {
         fetchBtn.disabled = false;
         fetchBtn.textContent = 'View Report';
@@ -230,6 +246,7 @@
 
     clearBtn.addEventListener('click', () => {
       userIdInput.value = '';
+      errorMsg.textContent = '';
       currentReportHTML = '';
     });
 

@@ -330,7 +330,7 @@
 
         if (currentQuestion === totalQuestions) {
           // Final question finished
-          window.location.href = "/final_report_template";
+          window.location.href = `/final_report_template?user_id=${userId}`;
           return;
         }
 
