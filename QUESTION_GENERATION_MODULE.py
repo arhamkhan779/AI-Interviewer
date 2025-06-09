@@ -40,7 +40,8 @@ class QuestionGeneration:
             The difficulty level of these questions should be: **{level}**.
 
             Ensure the questions are diverse and cover a broad range of fundamental programming concepts including:
-
+            
+            Make Sure Each question will be of 6 minutes timespan , means each question can be attempt in 6 minutes max time
             - Conditional statements (if-else)
             - Loops (for, while)
             - Functions
@@ -58,6 +59,7 @@ class QuestionGeneration:
 
             Ensure high quality, real-world technical questions.
             Generate Exact number of this question
+
             ###max_question = {max_question}
             '''
             return formatted_prompt.format(max_question = QuestionGeneration.max_questions,programming_language=self.programming_language,level= self.level)

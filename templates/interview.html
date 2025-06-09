@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AI Interview Page</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Technical Interview</title>
+
+  <!-- Orbitron font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/python/python.min.js"></script>
+
   <style>
-    /* === Your Theme === */
     body {
       background: linear-gradient(-45deg, #1f1f1f, #2c3e50, #34495e, #2c3e50);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       color: #ecf0f1;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: 'Orbitron', sans-serif;
       margin: 0;
+      display: flex;
+      overflow: hidden;
     }
 
     @keyframes gradientBG {
@@ -25,34 +31,103 @@
       100% { background-position: 0% 50%; }
     }
 
-    .form-container {
-      background-color: rgba(44, 62, 80, 0.9);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
-      width: 100%;
-      max-width: 600px;
+    .left-container {
+      width: 40%;
+      background-color: rgba(44, 62, 80, 0.95);
+      padding: 2rem;
+      box-shadow: 2px 0 5px rgba(0, 255, 128, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      height: 100vh;
+    }
+
+    .left-container h2 {
+      color: #1abc9c;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+
+    .speaking-circle {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #1abc9c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #0a3a2f;
+      z-index: 10;
+      box-shadow: 0 0 12px #1abc9c;
+      user-select: none;
+      cursor: default;
+      margin-bottom: 2rem;
       text-align: center;
+      padding: 10px;
+      line-height: 1.2;
     }
 
-    select, button, textarea {
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      font-size: 16px;
-      width: 100%;
-      border: none;
+    .speaking-circle span {
+      position: relative;
+      z-index: 20;
+      font-family: 'Orbitron', sans-serif;
+      user-select: none;
     }
 
-    button {
+    .glow-ring {
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #1abc9c66, transparent 70%);
+      filter: blur(8px);
+      animation: glowPulse 2.5s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      text-align: center;
+      min-height: 100px;
+      margin-bottom: 1.5rem;
+      padding: 0 10px;
+      user-select: text;
+    }
+
+    .next-button {
       background-color: #1abc9c;
       color: white;
       font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      font-size: 1rem;
+      user-select: none;
+      margin-top: auto;
     }
 
-    button:hover {
+    .next-button:hover:not(:disabled) {
       background-color: #16a085;
     }
 
@@ -61,177 +136,173 @@
       cursor: not-allowed;
     }
 
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-left-color: #1abc9c;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      color: #1abc9c;
-      font-size: 16px;
-      margin-top: 10px;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .status-message {
-      font-size: 14px;
-      color: #2ecc71;
-      margin-top: 8px;
-    }
-
-    textarea {
-      height: 150px;
-      resize: vertical;
+    .right-container {
+      width: 60%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(0, 0, 0, 0.85);
+      height: 100vh;
+      box-sizing: border-box;
     }
 
     .timer {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #e74c3c;
+      font-size: 1.3rem;
+      user-select: none;
+    }
+
+    .code-editor {
+      flex-grow: 1;
+      height: auto;
+      margin-top: 10px;
+      min-height: 0;
+    }
+
+    #question-audio {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<div class="form-container">
-  <h2>AI Interview</h2>
-  <div id="timer" class="timer">Total Time: 00:00 | Question Time: 00:00</div>
-  <div id="question-box">
-    <button id="start-btn">Start Interview</button>
+  <div class="left-container">
+    <h2>AI Technical Interviewer</h2>
+    <div class="speaking-circle">
+      <span>AI Interviewer</span>
+      <div class="glow-ring"></div>
+    </div>
+    <div id="question-text" class="question-text">Loading question...</div>
+    <button class="next-button" onclick="submitAnswer()">Next</button>
+    <audio id="question-audio" hidden></audio>
   </div>
-</div>
 
-<script>
-  const userId = localStorage.getItem("user_id") || prompt("Enter your user_id:"); // You can replace this with actual login session
+  <div class="right-container">
+    <div class="timer">Time Left: <span id="timer">06:00</span></div>
+    <div id="editor" class="code-editor"></div>
+  </div>
 
-  let questions = {};
-  let currentIndex = 1;
-  let totalQuestions = 0;
-  let totalTime = 0;
-  let questionTime = 360; // 6 minutes
-  let totalTimer, questionTimer;
-  let questionStartTime;
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    let editor;
+    const userId = new URLSearchParams(window.location.search).get('user_id');
+    let questions = {};
+    let currentQuestion = 1;
+    let totalQuestions = 0;
+    let questionStartTime;
+    let countdownInterval;
 
-  const startBtn = document.getElementById("start-btn");
-  const questionBox = document.getElementById("question-box");
-  const timerDiv = document.getElementById("timer");
-
-  function formatTime(seconds) {
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
-    return `${m}:${s}`;
-  }
-
-  function updateTimer(totalRemaining, questionRemaining) {
-    timerDiv.innerText = `Total Time: ${formatTime(totalRemaining)} | Question Time: ${formatTime(questionRemaining)}`;
-  }
-
-  function showQuestion(index) {
-    const question = questions[index];
-    if (!question) {
-      questionBox.innerHTML = `<p>Interview Complete!</p>`;
-      clearInterval(totalTimer);
-      clearInterval(questionTimer);
-      return;
+    function initEditor() {
+      editor = CodeMirror(document.getElementById("editor"), {
+        mode: "python",
+        theme: "default",
+        lineNumbers: true,
+        value: "",
+      });
+      editor.setSize("100%", "100%");
     }
 
-    questionStartTime = new Date();
+    async function fetchQuestions() {
+      try {
+        const res = await axios.get(`/get_questions?user_id=${userId}`);
+        questions = res.data.questions;
+        totalQuestions = Object.keys(questions).length;
+        showQuestion();
+      } catch (err) {
+        alert("Failed to fetch questions.");
+        console.error(err);
+      }
+    }
 
-    questionBox.innerHTML = `
-      <h3>Question ${index}</h3>
-      <p>${question}</p>
-      <textarea id="answer" placeholder="Write your answer here..."></textarea>
-      <button id="submit-btn">Submit Answer</button>
-    `;
+    async function showQuestion() {
+      clearInterval(countdownInterval);
+      const questionText = questions[currentQuestion];
+      editor.setValue("");
+      questionStartTime = Date.now();
+      typeQuestion(questionText);
+      await playAudio(questionText);
+      startCountdown(6 * 60);
+    }
 
-    document.getElementById("submit-btn").onclick = async () => {
-      const answer = document.getElementById("answer").value.trim();
-      if (!answer) return alert("Please write an answer!");
+    function typeQuestion(text) {
+      const target = document.getElementById("question-text");
+      target.textContent = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          target.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 40);
+    }
 
-      const timeTaken = Math.floor((new Date() - questionStartTime) / 1000);
+    async function playAudio(text) {
+      try {
+        const res = await axios.post("/audio", { text }, { responseType: "blob" });
+        const blob = new Blob([res.data], { type: "audio/mpeg" });
+        const url = URL.createObjectURL(blob);
+        const audio = document.getElementById("question-audio");
+        audio.src = url;
+        audio.play();
+      } catch (err) {
+        console.error("Audio error:", err);
+      }
+    }
 
+    function startCountdown(seconds) {
+      const timerDisplay = document.getElementById("timer");
+      countdownInterval = setInterval(() => {
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        timerDisplay.textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        if (seconds <= 0) {
+          clearInterval(countdownInterval);
+          alert("Time's up!");
+          submitAnswer(true);
+        }
+        seconds--;
+      }, 1000);
+    }
+
+    async function submitAnswer(auto = false) {
+      const answer = editor.getValue().trim();
+      const timeTaken = ((Date.now() - questionStartTime) / 1000).toFixed(2);
+      if (!auto && !answer) {
+        alert("Write an answer or wait for auto submit.");
+        return;
+      }
       const payload = {
-        user_id: userId,
-        question_number: index,
-        question: question,
+        question_number: currentQuestion,
+        question: questions[currentQuestion],
         answer: answer,
-        time_taken: formatTime(timeTaken)
+        time_taken: timeTaken
       };
 
-      const res = await fetch("/save_answer", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-      if (res.ok) {
-        currentIndex++;
-        clearInterval(questionTimer);
-        startQuestionTimer();
-        showQuestion(currentIndex);
-      } else {
-        alert("Error saving answer: " + result.error);
-      }
-    };
-  }
-
-  function startQuestionTimer() {
-    let qTime = questionTime;
-    questionTimer = setInterval(() => {
-      qTime--;
-      updateTimer(totalTime, qTime);
-      if (qTime <= 0) {
-        clearInterval(questionTimer);
-        alert("Time's up for this question! Submitting empty answer.");
-        document.getElementById("answer").value = "";
-        document.getElementById("submit-btn").click();
-      }
-    }, 1000);
-  }
-
-  startBtn.onclick = async () => {
-    startBtn.disabled = true;
-    questionBox.innerHTML = `<div class="spinner"></div><p class="loading-text">Fetching Questions...</p>`;
-
-    const res = await fetch(`/get_questions?user_id=${userId}`);
-    const data = await res.json();
-
-    if (data.questions) {
-      questions = data.questions;
-      totalQuestions = Object.keys(questions).length;
-      totalTime = totalQuestions * 360;
-
-      showQuestion(currentIndex);
-
-      totalTimer = setInterval(() => {
-        totalTime--;
-        if (totalTime <= 0) {
-          clearInterval(totalTimer);
-          alert("Interview time over!");
-          window.location.reload();
+      try {
+        await axios.post(`/save_answer?user_id=${userId}`, payload);
+        currentQuestion++;
+        if (currentQuestion > totalQuestions) {
+          clearInterval(countdownInterval);
+          alert("Interview complete. Thank you!");
+          window.location.href = "/home";
+        } else {
+          showQuestion();
         }
-      }, 1000);
-
-      startQuestionTimer();
-    } else {
-      questionBox.innerHTML = `<p>User not found or no questions available.</p>`;
+      } catch (err) {
+        alert("Error saving answer.");
+        console.error(err);
+      }
     }
-  };
-</script>
+
+    window.onload = () => {
+      initEditor();
+      fetchQuestions();
+    };
+  </script>
 
 </body>
 </html>

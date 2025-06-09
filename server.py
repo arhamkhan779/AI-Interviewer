@@ -1,10 +1,11 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for,send_file
 from sqlite_handler import SqliteHandler
 from flask_cors import CORS
 from QUESTION_GENERATION_MODULE import QuestionGeneration
 from database_schema import create_database_schema
 import os
 import datetime
+from TEXT_TO_SPEECH_MODULE import TextToSpeech
 
 db_name = 'interview_app.db'
 user_collection = "User_collection"
@@ -157,6 +158,20 @@ def get_user_questions():
             data[question_number] = questions[i]
             question_number+=1
         return jsonify({"user_id":id,"questions":data})
+
+
+@app.route("/audio", methods=["POST"])
+def audio():
+    text = request.get_json()["text"]
+    obj = TextToSpeech()
+    audio_bytes = obj.convert_to_audio(text)
+    
+    return send_file(
+        audio_bytes,
+        mimetype="audio/mpeg",
+        as_attachment=False,
+        download_name="speech.mp3"
+    )
 
 @app.route("/save_answer", methods=["POST"])
 def save_answer():

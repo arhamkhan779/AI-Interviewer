@@ -68,26 +68,26 @@ for table in tables:
 
 
 from sqlite_handler import SqliteHandler
-print(SqliteHandler.find_all("Main_Db.db",'QuestionBank_collection'))
+print(SqliteHandler.find_all("interview_app.db","Q_A_Bank_collection"))
 # print(SqliteHandler.find_one_by_field("Main_Db.db",'User_collection',"user_id",90))
 
 import sqlite3
 
-DB_NAME = "Main_Db.db"
+DB_NAME = "interview_app.db"
 TABLES = ["User_collection", "QuestionBank_collection", "Q_A_Bank_collection"]
 
-# def clear_all_tables():
-#     try:
-#         conn = sqlite3.connect(DB_NAME)
-#         cursor = conn.cursor()
-#         for table in TABLES:
-#             cursor.execute(f"DELETE FROM {table}")
-#             print(f"Cleared table: {table}")
-#         conn.commit()
-#         conn.close()
-#         print("✅ All tables cleared successfully.")
-#     except sqlite3.Error as e:
-#         print(f"❌ Error clearing tables: {e}")
+def clear_all_tables():
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        for table in TABLES:
+            cursor.execute(f"DELETE FROM {table}")
+            print(f"Cleared table: {table}")
+        conn.commit()
+        conn.close()
+        print("✅ All tables cleared successfully.")
+    except sqlite3.Error as e:
+        print(f"❌ Error clearing tables: {e}")
 
-# if __name__ == "__main__":
-#     clear_all_tables()
+if __name__ == "__main__":
+    clear_all_tables()
