@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <title>Technical Interview</title>
 
-  <!-- Orbitron font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
   <!-- CodeMirror -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css" />
@@ -14,12 +14,12 @@
 
   <style>
     body {
-      background: linear-gradient(-45deg, #1f1f1f, #2c3e50, #34495e, #2c3e50);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: 300% 300%;
+      animation: gradientBG 12s ease infinite;
       color: #ecf0f1;
       min-height: 100vh;
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Roboto', sans-serif;
       margin: 0;
       display: flex;
       overflow: hidden;
@@ -33,132 +33,144 @@
 
     .left-container {
       width: 40%;
-      background-color: rgba(44, 62, 80, 0.95);
+      background-color: rgba(15, 32, 39, 0.95);
       padding: 2rem;
-      box-shadow: 2px 0 5px rgba(0, 255, 128, 0.2);
+      box-shadow: 2px 0 10px rgba(0, 255, 128, 0.3);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       box-sizing: border-box;
       height: 100vh;
     }
 
-    .left-container h2 {
-      color: #1abc9c;
-      margin-bottom: 2rem;
-      font-weight: 700;
-      font-size: 2rem;
+    .header {
+      text-align: center;
+      position: relative;
     }
 
-    .speaking-circle {
-      position: relative;
+    .interviewer-circle {
       width: 120px;
       height: 120px;
+      background-color: #00cec9;
       border-radius: 50%;
-      background: #1abc9c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #fff;
+      margin: 0 auto 1rem auto;
+      box-shadow: 0 0 20px #00cec9;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 206, 201, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(0, 206, 201, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 206, 201, 0); }
+    }
+
+    .speaking-indicator {
+      width: 16px;
+      height: 16px;
+      background-color: #00cec9;
+      border-radius: 50%;
+      margin: 0 auto;
+      animation: blink 1s infinite;
+      display: none;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .info {
       display: flex;
       justify-content: center;
-      align-items: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #0a3a2f;
-      z-index: 10;
-      box-shadow: 0 0 12px #1abc9c;
-      user-select: none;
-      cursor: default;
-      margin-bottom: 2rem;
-      text-align: center;
-      padding: 10px;
-      line-height: 1.2;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
 
-    .speaking-circle span {
-      position: relative;
-      z-index: 20;
-      font-family: 'Orbitron', sans-serif;
-      user-select: none;
+    .info .badge {
+      background-color: #34495e;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #00cec9;
+      box-shadow: 0 0 10px #00cec9;
+      transition: transform 0.3s ease;
     }
 
-    .glow-ring {
-      position: absolute;
-      top: -15px;
-      left: -15px;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: radial-gradient(circle at center, #1abc9c66, transparent 70%);
-      filter: blur(8px);
-      animation: glowPulse 2.5s ease-in-out infinite;
-      z-index: 5;
+    .info .badge:hover {
+      transform: scale(1.1);
     }
 
-    @keyframes glowPulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.6;
-      }
-      50% {
-        transform: scale(1.15);
-        opacity: 1;
-      }
+    .question-info {
+      font-size: 1rem;
+      margin: 1rem 0;
     }
 
     .question-text {
-      font-size: 1.2rem;
-      text-align: center;
+      font-size: 1.1rem;
       min-height: 100px;
-      margin-bottom: 1.5rem;
-      padding: 0 10px;
-      user-select: text;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .navigation span {
+      font-size: 0.9rem;
     }
 
     .next-button {
-      background-color: #1abc9c;
+      background-color: #00cec9;
       color: white;
-      font-weight: bold;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      font-size: 1rem;
-      user-select: none;
-      margin-top: auto;
+      font-weight: bold;
     }
 
     .next-button:hover:not(:disabled) {
-      background-color: #16a085;
-    }
-
-    button:disabled {
-      background-color: gray;
-      cursor: not-allowed;
+      background-color: #00b2a9;
     }
 
     .right-container {
       width: 60%;
       padding: 2rem;
+      background-color: rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
-      background-color: rgba(0, 0, 0, 0.85);
       height: 100vh;
       box-sizing: border-box;
     }
 
     .timer {
       font-weight: bold;
-      margin-bottom: 15px;
-      color: #e74c3c;
-      font-size: 1.3rem;
-      user-select: none;
+      margin-bottom: 10px;
+      color: #ff7675;
+      font-size: 1.2rem;
     }
 
     .code-editor {
       flex-grow: 1;
-      height: auto;
-      margin-top: 10px;
-      min-height: 0;
+      background-color: #1e272e;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     #question-audio {
@@ -167,22 +179,33 @@
   </style>
 </head>
 <body>
-
   <div class="left-container">
-    <h2>AI Technical Interviewer</h2>
-    <div class="speaking-circle">
-      <span>AI Interviewer</span>
-      <div class="glow-ring"></div>
+    <div class="header">
+      <div class="interviewer-circle">AI Interviewer</div>
+      <div class="speaking-indicator" id="speaking-indicator"></div>
+      <div class="info">
+        <div class="badge" id="level-badge">Level: <span id="level"></span></div>
+        <div class="badge" id="language-badge">Language: <span id="language"></span></div>
+      </div>
     </div>
-    <div id="question-text" class="question-text">Loading question...</div>
-    <button class="next-button" onclick="submitAnswer()">Next</button>
-    <audio id="question-audio" hidden></audio>
+
+    <div class="question-info">
+      <strong>Question <span id="q-num"></span>:</strong>
+      <div id="question-text" class="question-text">Loading...</div>
+    </div>
+
+    <div class="navigation">
+      <span>Question <span id="current-question">1</span> of <span id="total-questions">1</span></span>
+      <button class="next-button" id="next-btn" onclick="submitAnswer()">Next</button>
+    </div>
   </div>
 
   <div class="right-container">
     <div class="timer">Time Left: <span id="timer">06:00</span></div>
     <div id="editor" class="code-editor"></div>
   </div>
+
+  <audio id="question-audio"></audio>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
@@ -209,6 +232,10 @@
         const res = await axios.get(`/get_questions?user_id=${userId}`);
         questions = res.data.questions;
         totalQuestions = Object.keys(questions).length;
+        document.getElementById("total-questions").textContent = totalQuestions;
+        document.getElementById("level").textContent = res.data.level || "N/A";
+        document.getElementById("language").textContent = res.data.programming_language || "N/A";
+        updateNextButtonText();
         showQuestion();
       } catch (err) {
         alert("Failed to fetch questions.");
@@ -221,9 +248,21 @@
       const questionText = questions[currentQuestion];
       editor.setValue("");
       questionStartTime = Date.now();
+      document.getElementById("q-num").textContent = currentQuestion;
+      document.getElementById("current-question").textContent = currentQuestion;
       typeQuestion(questionText);
       await playAudio(questionText);
       startCountdown(6 * 60);
+      updateNextButtonText();
+    }
+
+    function updateNextButtonText() {
+      const nextBtn = document.getElementById("next-btn");
+      if (currentQuestion === totalQuestions) {
+        nextBtn.textContent = "Finished";
+      } else {
+        nextBtn.textContent = "Next";
+      }
     }
 
     function typeQuestion(text) {
@@ -237,18 +276,22 @@
         } else {
           clearInterval(interval);
         }
-      }, 40);
+      }, 30);
     }
 
     async function playAudio(text) {
+      const indicator = document.getElementById("speaking-indicator");
       try {
+        indicator.style.display = "block";
         const res = await axios.post("/audio", { text }, { responseType: "blob" });
         const blob = new Blob([res.data], { type: "audio/mpeg" });
         const url = URL.createObjectURL(blob);
         const audio = document.getElementById("question-audio");
         audio.src = url;
         audio.play();
+        audio.onended = () => indicator.style.display = "none";
       } catch (err) {
+        indicator.style.display = "none";
         console.error("Audio error:", err);
       }
     }
@@ -284,25 +327,25 @@
 
       try {
         await axios.post(`/save_answer?user_id=${userId}`, payload);
-        currentQuestion++;
-        if (currentQuestion > totalQuestions) {
-          clearInterval(countdownInterval);
-          alert("Interview complete. Thank you!");
-          window.location.href = "/home";
-        } else {
-          showQuestion();
+
+        if (currentQuestion === totalQuestions) {
+          // Final question finished
+          window.location.href = "/final_report_template";
+          return;
         }
+
+        currentQuestion++;
+        showQuestion();
       } catch (err) {
-        alert("Error saving answer.");
+        alert("Failed to save answer. Please try again.");
         console.error(err);
       }
     }
 
-    window.onload = () => {
+    window.onload = function () {
       initEditor();
       fetchQuestions();
     };
   </script>
-
 </body>
 </html>

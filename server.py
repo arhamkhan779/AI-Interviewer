@@ -6,11 +6,14 @@ from database_schema import create_database_schema
 import os
 import datetime
 from TEXT_TO_SPEECH_MODULE import TextToSpeech
+import re
+from FINAL_REPORT_GENERATOR import FinalReportGenerator
 
 db_name = 'interview_app.db'
 user_collection = "User_collection"
 question_bank_collection = 'QuestionBank_collection'
 q_a_bank_collection = 'Q_A_Bank_collection'
+final_report_collection = "Final_Report"
 
 
 print(f"Creating Database Schema")
@@ -45,6 +48,10 @@ def interview_template():
     user_id = request.args.get("user_id")
     return render_template("interview.html",user_id=user_id)
 
+@app.route("/final_report_template")
+def final_report_template():
+    user_id = request.args.get("user_id")
+    return render_template("final_report_template.html",user_id=user_id)
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -157,12 +164,13 @@ def get_user_questions():
         for i in range(total_quesitons):
             data[question_number] = questions[i]
             question_number+=1
-        return jsonify({"user_id":id,"questions":data})
+        return jsonify({"user_id":id,"questions":data,"level":level,"programming_language":language})
 
 
 @app.route("/audio", methods=["POST"])
 def audio():
     text = request.get_json()["text"]
+    text = re.sub(r'[^A-Za-z0-9]', '', text)
     obj = TextToSpeech()
     audio_bytes = obj.convert_to_audio(text)
     
@@ -205,7 +213,38 @@ def save_answer():
     else:
         return jsonify({"error": message}), 500
 
+
+@app.route("/generate_final_report",methods = ["POST"])
+def generate_final_report():
+    user_id = request.args.get("user_id")
+    print(user_id)
+    obj = FinalReportGenerator(user_id=user_id)
+    report = obj.main()
+
+    insert_data = {
+        "user_id":user_id,
+        "report": report
+    }
+    success, message = SqliteHandler.insert_row(
+        dbname=db_name,
+        collectionname=final_report_collection,
+        **insert_data
+    )
+    return jsonify({"report":report})
+
+@app.route("/get_final_report",methods = ["POST"])
+def get_report():
+    user_id = request.get_json()["user_id"]
+
+    existing_data = SqliteHandler.find_one_by_field(
+            db_name, final_report_collection, "user_Id", user_id
+        )
+
+    if len(existing_data) == 0:
+            return jsonify({"response": "Data Does Not Exist with Id"})
     
+    else:
+        return jsonify({"report":existing_data[1]})
     
 if __name__ == "__main__":
     app.run(debug=True)

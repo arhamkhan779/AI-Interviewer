@@ -38,6 +38,14 @@ def create_database_schema(db_name='interview_app.db'):
         )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Final_Report (
+            user_Id INTEGER,
+            report Text,
+            FOREIGN KEY (user_Id) REFERENCES User_collection(user_Id)
+        )
+    ''')
+
     conn.commit()
     conn.close()
     print("Database schema created successfully.")
